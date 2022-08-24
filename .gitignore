@@ -3,8 +3,15 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Virtual enviroment
+.geohash-tools
+
+# Notebook tests
+test.ipynb
+
 # C extensions
 *.so
+
 
 # Distribution / packaging
 .Python
