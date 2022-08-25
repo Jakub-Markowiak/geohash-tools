@@ -3,8 +3,6 @@
 # https://en.wikipedia.org/wiki/Geohash
 # https://github.com/masuidrive/pr_geohash
 
-# Package description
-
 from math import asin as _asin 
 from math import sin as _sin
 from math import cos as _cos
