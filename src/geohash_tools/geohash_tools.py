@@ -1,18 +1,25 @@
-# Author
+# Author: Jakub Markowiak (jamarkowiak@gmail.com)
+# Sources:
+# https://en.wikipedia.org/wiki/Geohash
+# https://github.com/masuidrive/pr_geohash
+
 # Package description
-# etc.
-# TODO: use .index method maybe
-# TODO: remember: del, __
+
+from math import asin as _asin 
+from math import sin as _sin
+from math import cos as _cos
+from math import sqrt as _sqrt
 
 _base32ghs = '0123456789bcdefghjkmnpqrstuvwxyz'
 _decimal = range(0,32)
-# pair base32 characters and decimal characters
+
+# zip base32ghs characters and decimal characters
 _converter_decimal = dict(zip(_decimal, _base32ghs))
 _converter_base32ghs = dict(zip(_base32ghs, _decimal))
+
 # convert characters between systems
 _decimal_to_base32ghs = lambda x: _converter_decimal[x]
-_base32ghs_to_decimal = lambda x: _converter_base32ghs[x]
-def _base32ghs_to_base2(x): return(format(_base32ghs_to_decimal(x), '05b'))
+_base32ghs_to_base2 = lambda x: format(_converter_base32ghs[x], '05b')
 _decode_map_base2 = {char: _base32ghs_to_base2(char) for char in _base32ghs}
 
 def encode(lat, lon, precision=6):
@@ -45,8 +52,8 @@ def encode(lat, lon, precision=6):
                 geohash += '0'
                 lat_interval = (lat_interval[0], mid)
         is_odd = not is_odd
-    new = [geohash[i:i+5] for i in range(0, len(geohash), 5)]
-    geohash = ''.join([_decimal_to_base32ghs(int(i,base=2)) for i in new])
+
+    geohash = ''.join([_decimal_to_base32ghs(int(i,base=2)) for i in [geohash[j:j+5] for j in range(0, len(geohash), 5)]])
 
     return(geohash)
 
@@ -133,8 +140,21 @@ def neighbours(geohash, include_self = True, show=False):
     else:
         return([top_left, top, top_right, left, right, bottom_left, bottom, bottom_right])
 
+_earth_radius = 6371000 # in meters 
 def distance(geohash_1, geohash_2):
+    '''
+    Calculate exact distance between two geohashes.
+    Returns distance between input geohashes in meters.
+    '''
     (geohash_1_lat, geohash_1_lon), (geohash_2_lat, geohash_2_lon) = decode(geohash_1), decode(geohash_2)
 
-    return(dist)
+    # calculate distance using haversine formula 
+    d = 2 * _earth_radius * _asin(
+        _sqrt(
+            (_sin((geohash_2_lon - geohash_1_lon) / 2)) ** 2 +
+            _cos(geohash_1_lon) * _cos(geohash_2_lon) * _sin((geohash_2_lat - geohash_1_lat) / 2) ** 2
+        )
+    )
+
+    return(d)
 
