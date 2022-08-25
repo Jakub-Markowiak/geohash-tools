@@ -155,4 +155,3 @@ def distance(geohash_1, geohash_2):
     )
 
     return(d)
-
