@@ -6,7 +6,7 @@ except ImportError:
 setup(
     include_package_data=True,
     name='geohash_tools',
-    version='0.1.1',
+    version='0.1.2',
     license='MIT',
     description='Geohash tools for performing geohash related tasks.',
     url="https://github.com/Jakub-Markowiak/geohash-tools",
