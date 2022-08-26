@@ -155,3 +155,29 @@ def distance(geohash_1, geohash_2):
     )
 
     return(d)
+
+def find_closest(geohash, geohash_list, start_precision=4):
+    '''
+    Find geohash from the specified list which is closest to input geohash.
+    Returns geohash string.
+    '''
+    precision = len(geohash)
+    while precision > 1:
+        calculated_neighbours = neighbours(geohash[:precision])
+        geohash_list_filtered = [geo[:precision] for geo in geohash_list if geo[:precision] in calculated_neighbours]
+        min_dist = _earth_radius * 3.14 ** 2
+        if len(geohash_list_filtered) > 0:
+            for geo in geohash_list_filtered:
+                dist = distance(geohash, geo)            
+                if dist <  min_dist:
+                    min_dist = dist
+                    closest_geohash = geo
+            break
+        precision -= 1
+
+    return(
+        {
+            'closest_geohash:': closest_geohash,
+            'distance': min_dist
+        }
+    )
